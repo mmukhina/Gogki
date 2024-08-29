@@ -25,6 +25,7 @@ const byte address[6] = "00001";
 
 #define HEAD_MIN 1000
 #define HEAD_MAX 2000
+#define HEAD_STOP_VALUE 1900
 
 #define X_MIN 1000
 #define X_MAX 2000
@@ -144,45 +145,50 @@ void loop() {
       data.head_fold = map(head_fold_value, POT_MIN, POT_MAX, HEAD_MIN, HEAD_MAX);
       data.eyes = map(eyes_value, POT_MIN, POT_MAX, EYE_MIN, EYE_MAX);
 
-      // Handle reset button
-      if (digitalRead(RESET_PIN) && !reset_flag) {
-        angleX_offset = data.angleX;
-        angleY_offset = data.angleY;
-        angleZ_offset = data.angleZ;
-        reset_flag = true;
-      } else if (!digitalRead(RESET_PIN)) {
-        reset_flag = false;
-      }
-
-      data.angleX -= angleX_offset;
-      data.angleY -= angleY_offset;
-      data.angleZ -= angleZ_offset;
-
-      data.angleX = wrapAngle(data.angleX);
-      data.angleY = wrapAngle(data.angleY);
-      data.angleZ = wrapAngle(data.angleZ);
-
-      data.angleX = constrain(data.angleX, -90, 90);
-      data.angleY = constrain(data.angleY, -90, 90);
-      data.angleZ = constrain(data.angleZ, -90, 90);
-
-      data.angleX = map(data.angleX, -90, 90, X_MIN, X_MAX);
-      data.angleZ = map(data.angleZ, -90, 90, Z_MIN, Z_MAX);
-
-      Serial.print(data.angleX);
-      Serial.print(" ");
-      Serial.print(data.angleY);
-      Serial.print(" ");
-      Serial.println(data.angleZ);
-
-      if (data.angleY > ROTATION_LIMIT) {
-        data.angleY = ROTATION_HIGH;
-      } else if (data.angleY < -ROTATION_LIMIT) {
-        data.angleY = ROTATION_LOW;
-      } else {
+      if (data.head_fold < HEAD_STOP_VALUE) {
         data.angleY = ROTATION_CENTER;
-      }
+        data.angleZ = ROTATION_CENTER;
+        data.angleX = 3000 - data.head_fold;
+      } else {
+        // Handle reset button
+        if (digitalRead(RESET_PIN) && !reset_flag) {
+          angleX_offset = data.angleX;
+          angleY_offset = data.angleY;
+          angleZ_offset = data.angleZ;
+          reset_flag = true;
+        } else if (!digitalRead(RESET_PIN)) {
+          reset_flag = false;
+        }
 
+        data.angleX -= angleX_offset;
+        data.angleY -= angleY_offset;
+        data.angleZ -= angleZ_offset;
+
+        data.angleX = wrapAngle(data.angleX);
+        data.angleY = wrapAngle(data.angleY);
+        data.angleZ = wrapAngle(data.angleZ);
+
+        data.angleX = constrain(data.angleX, -90, 90);
+        data.angleY = constrain(data.angleY, -90, 90);
+        data.angleZ = constrain(data.angleZ, -90, 90);
+
+        data.angleX = map(data.angleX, -90, 90, X_MIN, X_MAX);
+        data.angleZ = map(data.angleZ, -90, 90, Z_MIN, Z_MAX);
+
+        Serial.print(data.angleX);
+        Serial.print(" ");
+        Serial.print(data.angleY);
+        Serial.print(" ");
+        Serial.println(data.angleZ);
+
+        if (data.angleY > ROTATION_LIMIT) {
+          data.angleY = ROTATION_HIGH;
+        } else if (data.angleY < -ROTATION_LIMIT) {
+          data.angleY = ROTATION_LOW;
+        } else {
+          data.angleY = ROTATION_CENTER;
+        }
+      }
 
       if (radio.write(&data, sizeof(data))) {
         setColor(0, 255, 0);
