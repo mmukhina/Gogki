@@ -20,11 +20,17 @@ const byte address[6] = "00001";
 #define POT_MIN 0
 #define POT_MAX 1024
 
-#define SERVO_MIN 1000
-#define SERVO_MAX 2000
-
 #define EYE_MIN 1000
 #define EYE_MAX 2000
+
+#define HEAD_MIN 1000
+#define HEAD_MAX 2000
+
+#define X_MIN 1000
+#define X_MAX 2000
+
+#define Z_MIN 1000
+#define Z_MAX 2000
 
 #define ROTATION_LIMIT 45
 #define ROTATION_CENTER 1500
@@ -135,7 +141,7 @@ void loop() {
       int head_fold_value = analogRead(HEAD_FOLD_POT_PIN);
       int eyes_value = analogRead(EYE_POT_PIN);
 
-      data.head_fold = map(head_fold_value, POT_MIN, POT_MAX, SERVO_MIN, SERVO_MAX);
+      data.head_fold = map(head_fold_value, POT_MIN, POT_MAX, HEAD_MIN, HEAD_MAX);
       data.eyes = map(eyes_value, POT_MIN, POT_MAX, EYE_MIN, EYE_MAX);
 
       // Handle reset button
@@ -160,8 +166,8 @@ void loop() {
       data.angleY = constrain(data.angleY, -90, 90);
       data.angleZ = constrain(data.angleZ, -90, 90);
 
-      data.angleX = map(data.angleX, -90, 90, SERVO_MIN, SERVO_MAX);
-      data.angleZ = map(data.angleZ, -90, 90, SERVO_MIN, SERVO_MAX);
+      data.angleX = map(data.angleX, -90, 90, X_MIN, X_MAX);
+      data.angleZ = map(data.angleZ, -90, 90, Z_MIN, Z_MAX);
 
       Serial.print(data.angleX);
       Serial.print(" ");
