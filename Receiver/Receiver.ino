@@ -4,7 +4,7 @@
 #include <Servo.h>
 
 #define MOTOR_MIDDLE_VALUE 1500
-#define NO_SIGNAL_TIMEOUT 1000 
+#define NO_SIGNAL_TIMEOUT 1000
 #define STEP_SIZE 10
 
 #define LED_PIN 9
@@ -34,7 +34,7 @@ Servo motorZ;
 Servo motorHead;
 Servo motorEyes;
 
-unsigned long lastSignalTime = 0; 
+unsigned long lastSignalTime = 0;
 
 int currentPosX = MOTOR_MIDDLE_VALUE;
 int currentPosY = MOTOR_MIDDLE_VALUE;
@@ -75,7 +75,7 @@ void smoothMove(Servo& motor, int& currentPos, int targetPos) {
       currentPos -= STEP_SIZE;
       if (currentPos < targetPos) currentPos = targetPos;
     }
-    motor.writeMicroseconds(currentPos);  
+    motor.writeMicroseconds(currentPos);
   }
 }
 
@@ -95,6 +95,12 @@ void loop() {
     if (millis() - lastSignalTime >= NO_SIGNAL_TIMEOUT) {
       digitalWrite(LED_PIN, LOW);
       Serial.println("no signal");
+
+      smoothMove(motorX, currentPosX, MOTOR_MIDDLE_VALUE);
+      smoothMove(motorY, currentPosY, MOTOR_MIDDLE_VALUE);
+      smoothMove(motorZ, currentPosZ, MOTOR_MIDDLE_VALUE);
+      smoothMove(motorHead, currentPosHead, MOTOR_MIDDLE_VALUE);
+      smoothMove(motorEyes, currentPosEyes, MOTOR_MIDDLE_VALUE);
     }
   }
 }
