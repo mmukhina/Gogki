@@ -23,6 +23,9 @@ const byte address[6] = "00001";
 #define SERVO_MIN 1000
 #define SERVO_MAX 2000
 
+#define EYE_MIN 1000
+#define EYE_MAX 2000
+
 #define ROTATION_LIMIT 45
 #define ROTATION_CENTER 1500
 #define ROTATION_LOW 1450
@@ -133,7 +136,7 @@ void loop() {
       int eyes_value = analogRead(EYE_POT_PIN);
 
       data.head_fold = map(head_fold_value, POT_MIN, POT_MAX, SERVO_MIN, SERVO_MAX);
-      data.eyes = map(eyes_value, POT_MIN, POT_MAX, SERVO_MIN, SERVO_MAX);
+      data.eyes = map(eyes_value, POT_MIN, POT_MAX, EYE_MIN, EYE_MAX);
 
       // Handle reset button
       if (digitalRead(RESET_PIN) && !reset_flag) {
