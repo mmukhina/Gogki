@@ -25,7 +25,7 @@ const byte address[6] = "00001";
 
 #define HEAD_MIN 1000
 #define HEAD_MAX 2000
-#define HEAD_STOP_VALUE 1900
+#define HEAD_STOP_VALUE 1400
 
 #define X_MIN 1000
 #define X_MAX 2000
